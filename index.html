@@ -8,14 +8,13 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Bebas+Neue&family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- html2canvas for JPG export -->
+  <!-- html2canvas -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <!-- jsPDF for PDF export -->
+  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root {
-      /* default Tiger colors: red & white */
       --bg-top: #ffffff;
       --bg-bottom: #f5f5f5;
       --primary: #c8102e;
@@ -23,92 +22,75 @@
       --card-bg: #ffffff;
       --side-bg: #c8102e;
       --side-text: #ffffff;
-      --font-header: "Oswald", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-body: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-header: "Oswald";
+      --font-body: "Roboto";
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--font-body);
       background: #111;
-      color: #f5f5f5;
+      color: #fff;
       padding: 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+      font-family: var(--font-body);
     }
 
     h1 {
-      color: #fff;
       text-align: center;
-      font-size: 1.1rem;
-      letter-spacing: 0.08em;
+      font-size: 1.2rem;
       text-transform: uppercase;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.75rem;
     }
 
     .app {
+      max-width: 1200px;
+      margin: auto;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      max-width: 1200px;
-      margin: 0 auto;
     }
 
-    .panel, .preview-wrapper {
+    .panel {
       background: #1f1f1f;
       border-radius: 12px;
-      padding: 0.85rem 0.9rem;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
-      color: #f5f5f5;
+      padding: 0.9rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
 
     .panel h2 {
-      font-size: 0.95rem;
-      margin-bottom: 0.4rem;
-      letter-spacing: 0.08em;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
       text-transform: uppercase;
     }
 
-    .field-group {
-      margin-bottom: 0.6rem;
-    }
-
+    .field-group { margin-bottom: 0.6rem; }
     .field-group label {
-      display: block;
       font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      display: block;
       margin-bottom: 0.2rem;
-      color: #cccccc;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
 
-    .field-group input[type="text"],
-    .field-group input[type="date"],
-    .field-group textarea,
-    .field-group select {
+    input, select, textarea {
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #444;
       background: #121212;
-      color: #f5f5f5;
-      padding: 0.45rem 0.6rem;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 0.5rem;
       font-size: 0.9rem;
     }
 
-    .field-group textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
+    textarea { resize: vertical; }
 
     .field-row {
       display: flex;
-      gap: 0.5rem;
       flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    .field-row > .field-group {
+    .field-row .field-group {
       flex: 1 1 200px;
     }
 
@@ -122,161 +104,97 @@
       flex: 1 1 45%;
     }
 
-    .color-row input[type="color"] {
-      width: 100%;
+    .color-row input[type=color] {
       height: 2rem;
       padding: 0;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #121212;
-    }
-
-    input[type="file"] {
-      width: 100%;
-      font-size: 0.8rem;
     }
 
     button {
+      width: 100%;
+      padding: 0.65rem;
       border-radius: 999px;
       border: none;
-      padding: 0.65rem 1rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
       text-transform: uppercase;
+      font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #ff4b4b, #c8102e);
+      background: #c8102e;
       color: #fff;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-      width: 100%;
-    }
-
-    button:active {
-      transform: translateY(1px);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .button-secondary {
-      background: #2e2e2e;
-    }
-
-    .button-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
       margin-top: 0.4rem;
     }
 
-    @media (min-width: 640px) {
-      .button-row {
-        flex-direction: row;
-      }
-      .button-row button {
-        width: auto;
-        flex: 1;
-      }
-    }
-
-    small {
-      font-size: 0.7rem;
-      color: #bbbbbb;
-      display: block;
-      margin-top: 0.35rem;
-      line-height: 1.3;
+    .button-secondary {
+      background: #333;
     }
 
     .preview-wrapper {
+      background: #1f1f1f;
+      border-radius: 12px;
       padding: 0.6rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
 
-    /* SCHEDULE CANVAS (landscape) */
+    /* ---------------- SCHEDULE ---------------- */
     .schedule {
       position: relative;
       width: 100%;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 16/9;
       background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+      padding: 0.75rem;
       border-radius: 18px;
       overflow: hidden;
-      padding: 0.75rem;
-      color: var(--primary);
-    }
-
-    .schedule::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top left, rgba(0,0,0,0.05), rgba(0,0,0,0.25));
-      pointer-events: none;
     }
 
     .sched-inner {
-      position: relative;
-      z-index: 1;
-      height: 100%;
       display: flex;
-      flex-direction: row;
+      height: 100%;
       gap: 0.6rem;
     }
 
-    /* LEFT SIDE BAR */
+    /* SIDE BAR */
     .side-bar {
       width: 18%;
-      min-width: 90px;
+      min-width: 100px;
       background: var(--side-bg);
       border-radius: 12px;
       padding: 0.5rem 0.35rem;
+      text-align: center;
+      color: var(--side-text);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      color: var(--side-text);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      gap: 0.5rem;
     }
 
     .side-line {
       font-family: var(--font-header);
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.15em;
     }
 
-    .side-line.small {
-      font-size: 0.75rem;
-      writing-mode: horizontal-tb;
-    }
+    .side-line.small { font-size: 0.75rem; }
 
     .side-line.main {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      writing-mode: horizontal-tb;
       white-space: pre-line;
     }
 
-    .side-line.main span {
-      display: block;   /* force double line stack */
-    }
+    .side-line.main span { display: block; }
 
-    /* MAIN GRID AREA */
+    /* MAIN GRID */
     .main-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       font-family: var(--font-header);
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      font-size: 0.7rem;
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.3rem;
     }
 
     .top-bar-title {
@@ -287,133 +205,82 @@
     .schedule-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-auto-rows: auto;
+      grid-template-columns: repeat(4, 1fr);
       gap: 0.4rem;
     }
 
     @media (max-width: 900px) {
       .schedule-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
-    @media (max-width: 720px) {
-      .sched-inner {
-        flex-direction: column;
-      }
-      .side-bar {
-        flex-direction: row;
-        width: 100%;
-        min-height: 70px;
-      }
-      .schedule-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    /* Image/Video snapshot box absolutely positioned bottom-right */
-    .image-box {
-      position: absolute;
-      bottom: 0.9rem;
-      right: 0.9rem;
-
-      /* shrunk ~20% from earlier */
-      width: 22%;
-      max-width: 208px;
-
-      aspect-ratio: 4 / 3;
-
-      /* no visible containment box */
-      border: none;
-      border-radius: 0;
-      background-color: transparent;
-
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-
-      z-index: 2;
-    }
-
-    @media (max-width: 900px) {
-      .image-box {
-        width: 28%;
-        max-width: 220px;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .image-box {
-        width: 40%;
-        bottom: 0.6rem;
-        right: 0.6rem;
-      }
+    @media (max-width: 700px) {
+      .sched-inner { flex-direction: column; }
+      .side-bar { width: 100%; flex-direction: row; }
+      .schedule-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .day-card {
       background: var(--card-bg);
-      border-radius: 18px;
       border: 2px solid var(--accent);
-      padding: 0.45rem 0.5rem;
-      display: flex;
-      flex-direction: column;
-      font-size: 0.68rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      border-radius: 18px;
+      padding: 0.45rem;
       color: var(--primary);
     }
 
-    .day-card.info-card {
-      grid-column: span 2;
-      font-size: 0.65rem;
-      align-self: stretch;
-    }
-
-    @media (max-width: 900px) {
-      .day-card.info-card {
-        grid-column: span 2;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .day-card.info-card {
-        grid-column: 1 / -1;
-      }
-    }
-
-    .day-header-row {
-      margin-bottom: 0.25rem;
-    }
+    .day-header-row { margin-bottom: 0.2rem; }
 
     .day-name {
       font-family: var(--font-header);
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.78rem;
-      margin-bottom: 0.05rem;
     }
 
     .day-date {
       font-family: var(--font-header);
       font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      opacity: 0.85;
+      opacity: 0.8;
     }
 
     .day-events {
-      margin-top: 0.17rem;
-      line-height: 1.4;
-      white-space: pre-wrap;
-      font-family: var(--font-body);
+      margin-top: 0.25rem;
       font-size: 0.7rem;
+      white-space: pre-wrap;
+    }
+
+    /* IMPORTANT INFO */
+    .info-card {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 700px) {
+      .info-card { grid-column: 1 / -1; }
     }
 
     .info-card-title {
       font-family: var(--font-header);
       text-transform: uppercase;
-      letter-spacing: 0.16em;
       font-size: 0.75rem;
       margin-bottom: 0.2rem;
+    }
+
+    /* BOTTOM-RIGHT PHOTO */
+    .image-box {
+      position: absolute;
+      bottom: 0.9rem;
+      right: 0.9rem;
+
+      width: 22%;
+      max-width: 208px;
+      aspect-ratio: 4/3;
+
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+
+      border: none;
     }
 
     .accent-bar {
@@ -421,448 +288,262 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 0.22rem;
+      height: 0.25rem;
       background: var(--accent);
-    }
-
-    @media print {
-      body { background: transparent; padding: 0; }
-      .panel { display: none; }
-      .preview-wrapper { box-shadow: none; padding: 0; }
-      .schedule { border-radius: 0; height: 100vh; }
     }
   </style>
 </head>
 <body>
-  <h1>Weekly Athletics – Landscape Builder</h1>
 
-  <div class="app">
-    <!-- INPUT PANEL -->
-    <div class="panel">
-      <h2>1. Header & Side Text</h2>
+<h1>Weekly Athletics – Landscape Builder</h1>
 
-      <div class="field-row">
-        <div class="field-group">
-          <label for="schoolName">Main Title (top right)</label>
-          <input id="schoolName" type="text" value="Terrell Tiger Athletics" />
-        </div>
-        <div class="field-group">
-          <label for="headlineText">Small Label (top left)</label>
-          <input id="headlineText" type="text" value="This Week In" />
-        </div>
-      </div>
+<div class="app">
 
-      <div class="field-row">
-        <div class="field-group">
-          <label for="weekStart">Week Start (Sunday)</label>
-          <input id="weekStart" type="date" />
-        </div>
-        <div class="field-group">
-          <label for="weekEnd">Week End (Saturday)</label>
-          <input id="weekEnd" type="date" />
-        </div>
-      </div>
+  <div class="panel">
+    <h2>Header & Side Text</h2>
 
-      <div class="field-row">
-        <div class="field-group">
-          <label for="sideLine1">Side Text Line 1</label>
-          <input id="sideLine1" type="text" value="Terrell High School" />
-        </div>
-        <div class="field-group">
-          <label for="sideLine2">Side Text Line 2 (Big)</label>
-          <input id="sideLine2" type="text" value="Tiger Athletics" />
-        </div>
-        <div class="field-group">
-          <label for="sideLine3">Side Text Line 3 (Date / Motto)</label>
-          <input id="sideLine3" type="text" placeholder="Auto uses date range" />
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label for="headerFontSelect">Header Font</label>
-          <select id="headerFontSelect">
-            <option value="oswald" selected>Oswald</option>
-            <option value="bebas">Bebas Neue</option>
-            <option value="montserrat">Montserrat</option>
-            <option value="poppins">Poppins</option>
-            <option value="robotoslab">Roboto Slab</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label for="bodyFontSelect">Body Font</label>
-          <select id="bodyFontSelect">
-            <option value="roboto" selected>Roboto</option>
-            <option value="montserrat">Montserrat</option>
-            <option value="poppins">Poppins</option>
-            <option value="robotoslab">Roboto Slab</option>
-            <option value="oswald">Oswald</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Media selection: image or video -->
+    <div class="field-row">
       <div class="field-group">
-        <label>Photo / Video Box (bottom right)</label>
-        <div class="field-row">
-          <div class="field-group">
-            <label for="bgImageInput">Image (JPG/PNG)</label>
-            <input id="bgImageInput" type="file" accept="image/*" />
-          </div>
-          <div class="field-group">
-            <label for="videoInput">Video (MP4/MOV)</label>
-            <input id="videoInput" type="file" accept="video/*" />
-          </div>
-        </div>
-        <small>
-          Upload either an image or a short video.
-          If a video is selected, a still frame is captured and used in the corner box.
-          (The exported JPG/PDF will always be a static image.)
-        </small>
+        <label>Main Title</label>
+        <input id="schoolName" value="Terrell Tiger Athletics">
       </div>
-
-      <hr style="border-color:#333;margin:0.6rem 0" />
-
-      <h2>2. Events by Day (Sunday–Saturday)</h2>
-      <small>One event per line. Use spaces or tabs to indent (they’ll be preserved).</small>
-
-      <div id="dayInputs"></div>
 
       <div class="field-group">
-        <label for="infoTextInput">Important Information (bottom box)</label>
-        <textarea id="infoTextInput" placeholder="Grade checks, ticket info, reminders, etc."></textarea>
+        <label>Small Label</label>
+        <input id="headlineText" value="This Week In">
       </div>
-
-      <div class="button-row">
-        <button id="updateBtn">Update Preview</button>
-        <button id="downloadJpgBtn" class="button-secondary">Download JPG</button>
-        <button id="downloadPdfBtn" class="button-secondary">Download PDF</button>
-      </div>
-
-      <small>Tip: Update, then download JPG for social media or PDF for email/printing.</small>
     </div>
 
-    <!-- PREVIEW PANEL -->
-    <div class="preview-wrapper">
-      <div id="schedule" class="schedule">
-        <div class="sched-inner">
-          <!-- SIDE BAR -->
-          <aside class="side-bar">
-            <div class="side-line small" id="sideLine1Preview">TERRELL HIGH SCHOOL</div>
-            <div class="side-line main" id="sideLine2Preview">TIGER ATHLETICS</div>
-            <div class="side-line small" id="sideLine3Preview">SEPTEMBER 22–28, 2024</div>
-          </aside>
-
-          <!-- MAIN GRID -->
-          <div class="main-panel">
-            <div class="top-bar">
-              <div class="top-bar-label" id="previewHeadline">THIS WEEK IN</div>
-              <div class="top-bar-title" id="previewSchool">TERRELL TIGER ATHLETICS</div>
-              <div class="top-bar-dates" id="previewSubtitle">SEP 22 – SEP 28</div>
-            </div>
-
-            <div class="schedule-grid" id="scheduleGrid">
-              <!-- Day cards injected by JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Picture / video snapshot box absolutely at bottom-right -->
-        <div class="image-box" id="imageBox"></div>
-
-        <div class="accent-bar"></div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Week Start</label>
+        <input id="weekStart" type="date">
       </div>
+
+      <div class="field-group">
+        <label>Week End</label>
+        <input id="weekEnd" type="date">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label>Side Text 1</label>
+        <input id="sideLine1" value="Terrell High School">
+      </div>
+
+      <div class="field-group">
+        <label>Side Text 2 (Big)</label>
+        <input id="sideLine2" value="Tiger Athletics">
+      </div>
+
+      <div class="field-group">
+        <label>Side Text 3</label>
+        <input id="sideLine3" placeholder="Auto date range">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Corner Image (bottom right)</label>
+      <input id="bgImageInput" type="file" accept="image/*">
+    </div>
+
+    <hr style="opacity:0.4;margin:0.7rem 0;">
+
+    <h2>Daily Events</h2>
+    <div id="dayInputs"></div>
+
+    <div class="field-group">
+      <label>Important Information</label>
+      <textarea id="infoTextInput"></textarea>
+    </div>
+
+    <button id="updateBtn">Update Preview</button>
+    <button id="downloadJpgBtn" class="button-secondary">Download JPG</button>
+    <button id="downloadPdfBtn" class="button-secondary">Download PDF</button>
+  </div>
+
+  <div class="preview-wrapper">
+    <div id="schedule" class="schedule">
+
+      <div class="sched-inner">
+
+        <aside class="side-bar">
+          <div class="side-line small" id="sideLine1Preview">TERRELL HIGH SCHOOL</div>
+          <div class="side-line main" id="sideLine2Preview"><span>TIGER</span><span>ATHLETICS</span></div>
+          <div class="side-line small" id="sideLine3Preview"></div>
+        </aside>
+
+        <div class="main-panel">
+
+          <div class="top-bar">
+            <div id="previewHeadline">THIS WEEK IN</div>
+            <div class="top-bar-title" id="previewSchool">TERRELL TIGER ATHLETICS</div>
+            <div id="previewSubtitle"></div>
+          </div>
+
+          <div class="schedule-grid" id="scheduleGrid"></div>
+
+        </div>
+      </div>
+
+      <div class="image-box" id="imageBox"></div>
+      <div class="accent-bar"></div>
+
     </div>
   </div>
 
-  <script>
-    const dayNames = [
-      "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
-    ];
+</div>
 
-    const fontMap = {
-      oswald: '"Oswald", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      bebas: '"Bebas Neue", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      montserrat: '"Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      poppins: '"Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      robotoslab: '"Roboto Slab", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      roboto: '"Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
-    };
+<script>
+const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const scheduleGrid = document.getElementById("scheduleGrid");
+const dayInputsContainer = document.getElementById("dayInputs");
 
-    function parseLocalDate(str) {
-      const parts = str.split("-");
-      if (parts.length !== 3) return new Date(NaN);
-      const year = Number(parts[0]);
-      const month = Number(parts[1]);
-      const day = Number(parts[2]);
-      return new Date(year, month - 1, day);
-    }
+dayNames.forEach((day, i) => {
+  const fg = document.createElement("div");
+  fg.className = "field-group";
+  fg.innerHTML = `
+    <label>${day} Events</label>
+    <textarea id="day-${i}" placeholder="• Example event"></textarea>
+  `;
+  dayInputsContainer.appendChild(fg);
 
-    const MONTH_ABBRS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const card = document.createElement("div");
+  card.className = "day-card";
+  card.innerHTML = `
+    <div class="day-header-row">
+      <div class="day-name">${day}</div>
+      <div class="day-date" id="date-${i}"></div>
+    </div>
+    <div class="day-events" id="events-${i}">No Events</div>
+  `;
+  scheduleGrid.appendChild(card);
+});
 
-    function formatDateRange(startStr, endStr) {
-      if (!startStr || !endStr) return "";
-      const s = parseLocalDate(startStr);
-      const e = parseLocalDate(endStr);
-      if (isNaN(s) || isNaN(e)) return "";
-      const sMonth = MONTH_ABBRS[s.getMonth()];
-      const eMonth = MONTH_ABBRS[e.getMonth()];
-      const sDay = s.getDate();
-      const eDay = e.getDate();
-      if (sMonth === eMonth) {
-        return `${sMonth} ${sDay} – ${eDay}`;
-      } else {
-        return `${sMonth} ${sDay} – ${eMonth} ${eDay}`;
-      }
-    }
+// IMPORTANT INFORMATION CARD
+const infoCard = document.createElement("div");
+infoCard.className = "day-card info-card";
+infoCard.innerHTML = `
+  <div class="info-card-title">Important Information</div>
+  <div class="day-events" id="infoTextPreview"></div>
+`;
+scheduleGrid.appendChild(infoCard);
 
-    // Build day input fields
-    const dayInputsContainer = document.getElementById("dayInputs");
-    dayNames.forEach((day, index) => {
-      const group = document.createElement("div");
-      group.className = "field-group";
+function parseLocalDate(s){
+  if(!s) return null;
+  const [y,m,d] = s.split("-").map(Number);
+  return new Date(y,m-1,d);
+}
 
-      const label = document.createElement("label");
-      label.textContent = day + " Events";
-      label.setAttribute("for", "day-" + index);
+function formatRange(a,b){
+  if(!a || !b) return "";
+  const A=parseLocalDate(a),B=parseLocalDate(b);
+  const M=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  return `${M[A.getMonth()]} ${A.getDate()} – ${M[B.getMonth()]} ${B.getDate()}`;
+}
 
-      const textarea = document.createElement("textarea");
-      textarea.id = "day-" + index;
-      textarea.placeholder = "Example:\n• MS Volleyball vs Crandall 5:00 PM";
+function updatePreview(){
+  const headline=document.getElementById("headlineText").value;
+  const title=document.getElementById("schoolName").value;
+  const start=document.getElementById("weekStart").value;
+  const end=document.getElementById("weekEnd").value;
+  const range=formatRange(start,end);
 
-      group.appendChild(label);
-      group.appendChild(textarea);
-      dayInputsContainer.appendChild(group);
+  document.getElementById("previewHeadline").textContent=headline.toUpperCase();
+  document.getElementById("previewSchool").textContent=title.toUpperCase();
+  document.getElementById("previewSubtitle").textContent=range;
+
+  const s1=document.getElementById("sideLine1").value;
+  const s2=document.getElementById("sideLine2").value;
+  const s3=document.getElementById("sideLine3").value || range;
+
+  document.getElementById("sideLine1Preview").textContent=s1.toUpperCase();
+  document.getElementById("sideLine3Preview").textContent=s3.toUpperCase();
+
+  // Double-line split
+  const words=s2.trim().split(/\s+/);
+  let html="";
+  if(words.length>1){
+    html=`<span>${words[0].toUpperCase()}</span><span>${words.slice(1).join(" ").toUpperCase()}</span>`;
+  } else {
+    html=`<span>${s2.toUpperCase()}</span>`;
+  }
+  document.getElementById("sideLine2Preview").innerHTML=html;
+
+  // Dates
+  if(start){
+    const base=parseLocalDate(start);
+    dayNames.forEach((d,i)=>{
+      const dt=new Date(base);
+      dt.setDate(base.getDate()+i);
+      const M=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+      document.getElementById("date-"+i).textContent=
+        `${M[dt.getMonth()]} ${dt.getDate()}`;
     });
+  }
 
-    // Build day cards in grid
-    const scheduleGrid = document.getElementById("scheduleGrid");
-    const dayColumns = [];
+  // Events
+  dayNames.forEach((d,i)=>{
+    const txt=document.getElementById("day-"+i).value.trim();
+    document.getElementById("events-"+i).textContent=txt||"No Events";
+  });
 
-    dayNames.forEach((day, index) => {
-      const card = document.createElement("div");
-      card.className = "day-card";
+  // Important Info
+  const info=document.getElementById("infoTextInput").value.trim();
+  document.getElementById("infoTextPreview").textContent=info;
+}
 
-      const headerRow = document.createElement("div");
-      headerRow.className = "day-header-row";
+document.getElementById("updateBtn").onclick=updatePreview;
 
-      const nameEl = document.createElement("div");
-      nameEl.className = "day-name";
-      nameEl.textContent = day;
+// IMAGE UPLOAD ONLY
+document.getElementById("bgImageInput").addEventListener("change",e=>{
+  const file=e.target.files[0];
+  if(!file){
+    imageBox.style.backgroundImage="";
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    imageBox.style.backgroundImage=`url('${ev.target.result}')`;
+  };
+  reader.readAsDataURL(file);
+});
 
-      const dateEl = document.createElement("div");
-      dateEl.className = "day-date";
-      dateEl.id = "date-" + index;
-      dateEl.textContent = "";
-
-      headerRow.appendChild(nameEl);
-      headerRow.appendChild(dateEl);
-
-      const eventsEl = document.createElement("div");
-      eventsEl.className = "day-events";
-      eventsEl.id = "events-" + index;
-      eventsEl.textContent = "No Events";
-
-      card.appendChild(headerRow);
-      card.appendChild(eventsEl);
-      scheduleGrid.appendChild(card);
-
-      dayColumns.push({ dateEl, eventsEl, card });
-    });
-
-    // Important Information card
-    const infoCard = document.createElement("div");
-    infoCard.className = "day-card info-card";
-
-    const infoHeader = document.createElement("div");
-    infoHeader.className = "info-card-title";
-    infoHeader.textContent = "IMPORTANT INFORMATION";
-
-    const infoBody = document.createElement("div");
-    infoBody.className = "day-events";
-    infoBody.id = "infoTextPreview";
-    infoBody.textContent = "";
-
-    infoCard.appendChild(infoHeader);
-    infoCard.appendChild(infoBody);
-    scheduleGrid.appendChild(infoCard);
-
-    function setCSSVars() {
-      const r = document.documentElement;
-      r.style.setProperty("--bg-top", document.getElementById("colorTopBg").value);
-      r.style.setProperty("--bg-bottom", document.getElementById("colorBottomBg").value);
-      r.style.setProperty("--card-bg", document.getElementById("colorCardBg").value);
-      r.style.setProperty("--accent", document.getElementById("colorAccent").value);
-      r.style.setProperty("--side-bg", document.getElementById("colorSideBg").value);
-      r.style.setProperty("--side-text", document.getElementById("colorSideText").value);
-
-      const headerChoice = document.getElementById("headerFontSelect").value;
-      const bodyChoice = document.getElementById("bodyFontSelect").value;
-      r.style.setProperty("--font-header", fontMap[headerChoice] || fontMap.oswald);
-      r.style.setProperty("--font-body", fontMap[bodyChoice] || fontMap.roboto);
+// EXPORT FUNCTIONS
+async function save(type){
+  updatePreview();
+  await new Promise(r=>setTimeout(r,50));
+  const node=document.getElementById("schedule");
+  html2canvas(node,{scale:3}).then(canvas=>{
+    if(type==="jpg"){
+      const a=document.createElement("a");
+      a.download="schedule.jpg";
+      a.href=canvas.toDataURL("image/jpeg",0.95);
+      a.click();
+    } else {
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF("l","pt","a4");
+      const img=canvas.toDataURL("image/jpeg",0.95);
+      const w=pdf.internal.pageSize.getWidth()-40;
+      const h=canvas.height*(w/canvas.width);
+      const x=20;
+      const y=(pdf.internal.pageSize.getHeight()-h)/2;
+      pdf.addImage(img,"JPEG",x,y,w,h);
+      pdf.save("schedule.pdf");
     }
+  });
+}
 
-    function updatePreview() {
-      setCSSVars();
+document.getElementById("downloadJpgBtn").onclick=()=>save("jpg");
+document.getElementById("downloadPdfBtn").onclick=()=>save("pdf");
 
-      const schoolName = document.getElementById("schoolName").value || "Athletics";
-      const headline = document.getElementById("headlineText").value || "This Week In";
-      const weekStart = document.getElementById("weekStart").value;
-      const weekEnd = document.getElementById("weekEnd").value;
+updatePreview();
+</script>
 
-      document.getElementById("previewSchool").textContent = schoolName.toUpperCase();
-      document.getElementById("previewHeadline").textContent = headline.toUpperCase();
-
-      const rangeText = formatDateRange(weekStart, weekEnd);
-      if (rangeText) {
-        document.getElementById("previewSubtitle").textContent = rangeText;
-      }
-
-      // Side bar text
-      const side1 = document.getElementById("sideLine1").value || "Terrell High School";
-      const side2Raw = document.getElementById("sideLine2").value || "Tiger Athletics";
-      const side3Input = document.getElementById("sideLine3").value;
-      const side3 = side3Input || rangeText || "";
-
-      document.getElementById("sideLine1Preview").textContent = side1.toUpperCase();
-
-      // Split line 2 into up to two stacked lines
-      const words = side2Raw.toUpperCase().trim().split(/\s+/);
-      let side2HTML = "";
-      if (words.length <= 1) {
-        side2HTML = words[0] || "";
-      } else {
-        side2HTML = `<span>${words[0]}</span><span>${words.slice(1).join(" ")}</span>`;
-      }
-      document.getElementById("sideLine2Preview").innerHTML = side2HTML;
-
-      document.getElementById("sideLine3Preview").textContent = side3.toUpperCase();
-
-      // Dates in day cards
-      if (weekStart) {
-        const base = parseLocalDate(weekStart);
-        if (!isNaN(base)) {
-          dayColumns.forEach((col, index) => {
-            const d = new Date(base);
-            d.setDate(base.getDate() + index);
-            const monthAbbr = MONTH_ABBRS[d.getMonth()];
-            col.dateEl.textContent = `${monthAbbr} ${d.getDate()}`;
-          });
-        }
-      } else {
-        dayColumns.forEach(col => col.dateEl.textContent = "");
-      }
-
-      // Events text
-      dayColumns.forEach((col, index) => {
-        const val = document.getElementById("day-" + index).value.trim();
-        col.eventsEl.textContent = val || "No Events";
-      });
-
-      // Important Information text
-      const infoVal = document.getElementById("infoTextInput").value.trim();
-      document.getElementById("infoTextPreview").textContent = infoVal;
-    }
-
-    document.getElementById("updateBtn").addEventListener("click", updatePreview);
-
-    // Picture / video snapshot box
-    const imageBox = document.getElementById("imageBox");
-    const bgInput = document.getElementById("bgImageInput");
-    const videoInput = document.getElementById("videoInput");
-
-    // Image upload
-    bgInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        imageBox.style.backgroundImage = "";
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        imageBox.style.backgroundImage = `url('${ev.target.result}')`;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Video upload -> capture frame as image
-    videoInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        return;
-      }
-
-      // Clear any existing image
-      imageBox.style.backgroundImage = "";
-
-      const url = URL.createObjectURL(file);
-      const video = document.createElement("video");
-      video.src = url;
-      video.muted = true;
-      video.playsInline = true;
-
-      // When data is loaded, grab a frame
-      video.addEventListener("loadeddata", function() {
-        try {
-          const canvas = document.createElement("canvas");
-          canvas.width = video.videoWidth || 800;
-          canvas.height = video.videoHeight || 450;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const dataURL = canvas.toDataURL("image/jpeg", 0.9);
-          imageBox.style.backgroundImage = `url('${dataURL}')`;
-        } finally {
-          URL.revokeObjectURL(url);
-        }
-      });
-
-      // Start loading
-      video.load();
-    });
-
-    async function captureAndDownload(type) {
-      updatePreview();
-      await new Promise(r => setTimeout(r, 100));
-
-      const node = document.getElementById("schedule");
-      const weekStart = document.getElementById("weekStart").value || "";
-      const weekEnd = document.getElementById("weekEnd").value || "";
-      const fileLabel = (weekStart && weekEnd) ? `${weekStart}_to_${weekEnd}` : "week";
-
-      html2canvas(node, { scale: 3 }).then(canvas => {
-        if (type === "jpg") {
-          const link = document.createElement("a");
-          link.download = `schedule_${fileLabel}.jpg`;
-          link.href = canvas.toDataURL("image/jpeg", 0.95);
-          link.click();
-        } else if (type === "pdf") {
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF("l", "pt", "a4");
-          const imgData = canvas.toDataURL("image/jpeg", 0.95);
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-          const imgWidth = pageWidth - 40;
-          const imgHeight = canvas.height * (imgWidth / canvas.width);
-          const x = 20;
-          const y = (pageHeight - imgHeight) / 2;
-          pdf.addImage(imgData, "JPEG", x, y, imgWidth, imgHeight);
-          pdf.save(`schedule_${fileLabel}.pdf`);
-        }
-      });
-    }
-
-    document.getElementById("downloadJpgBtn").addEventListener("click", () => captureAndDownload("jpg"));
-    document.getElementById("downloadPdfBtn").addEventListener("click", () => captureAndDownload("pdf"));
-
-    document.getElementById("headerFontSelect").addEventListener("change", setCSSVars);
-    document.getElementById("bodyFontSelect").addEventListener("change", setCSSVars);
-
-    // Initial render
-    updatePreview();
-  </script>
 </body>
 </html>
 
-</html>
+
 
 
