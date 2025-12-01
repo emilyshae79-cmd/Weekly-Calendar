@@ -253,11 +253,11 @@
     }
 
     .side-line.main {
-      font-size: 1.3rem;              /* bigger main text */
-      font-weight: 700;
-      writing-mode: vertical-rl;      /* ONLY this one vertical */
-      text-orientation: mixed;
-    }
+  font-size: 1.3rem;
+  font-weight: 700;
+  writing-mode: horizontal-tb;    /* <-- make it horizontal */
+  white-space: pre-line;          /* <-- respect line breaks */
+}
 
     /* MAIN GRID AREA */
     .main-panel {
@@ -785,4 +785,5 @@
   </script>
 </body>
 </html>
+
 
