@@ -200,9 +200,6 @@
       overflow: hidden;
       padding: 0.75rem;
       color: var(--primary);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
     }
 
     .schedule::before {
@@ -210,7 +207,7 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at top left, rgba(0,0,0,0.1), rgba(0,0,0,0.45));
+        radial-gradient(circle at top left, rgba(0,0,0,0.05), rgba(0,0,0,0.25));
       pointer-events: none;
     }
 
@@ -223,7 +220,7 @@
       gap: 0.6rem;
     }
 
-    /* LEFT VERTICAL SIDE BAR */
+    /* LEFT SIDE BAR */
     .side-bar {
       width: 18%;
       min-width: 90px;
@@ -249,14 +246,18 @@
 
     .side-line.small {
       font-size: 0.75rem;
-      writing-mode: horizontal-tb;    /* horizontal */
+      writing-mode: horizontal-tb;
     }
 
     .side-line.main {
-      font-size: 1.2rem;
-      font-weight: 600;
-      writing-mode: horizontal-tb;    /* now horizontal */
-      white-space: pre-line;          /* respect line breaks */
+      font-size: 1.3rem;
+      font-weight: 700;
+      writing-mode: horizontal-tb;
+      white-space: pre-line;
+    }
+
+    .side-line.main span {
+      display: block;   /* force double line stack */
     }
 
     /* MAIN GRID AREA */
@@ -287,7 +288,7 @@
       flex: 1;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-auto-rows: auto;          /* rows grow to fit content */
+      grid-auto-rows: auto;
       gap: 0.4rem;
     }
 
@@ -311,6 +312,45 @@
       }
     }
 
+    /* Image/Video snapshot box absolutely positioned bottom-right */
+    .image-box {
+      position: absolute;
+      bottom: 0.9rem;
+      right: 0.9rem;
+
+      /* shrunk ~20% from earlier */
+      width: 22%;
+      max-width: 208px;
+
+      aspect-ratio: 4 / 3;
+
+      /* no visible containment box */
+      border: none;
+      border-radius: 0;
+      background-color: transparent;
+
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      z-index: 2;
+    }
+
+    @media (max-width: 900px) {
+      .image-box {
+        width: 28%;
+        max-width: 220px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .image-box {
+        width: 40%;
+        bottom: 0.6rem;
+        right: 0.6rem;
+      }
+    }
+
     .day-card {
       background: var(--card-bg);
       border-radius: 18px;
@@ -324,7 +364,7 @@
     }
 
     .day-card.info-card {
-      grid-column: span 2;          /* smaller width than full */
+      grid-column: span 2;
       font-size: 0.65rem;
       align-self: stretch;
     }
@@ -337,7 +377,7 @@
 
     @media (max-width: 720px) {
       .day-card.info-card {
-        grid-column: 1 / -1;        /* full width on tiny screens */
+        grid-column: 1 / -1;
       }
     }
 
@@ -461,40 +501,24 @@
         </div>
       </div>
 
+      <!-- Media selection: image or video -->
       <div class="field-group">
-        <label>Colors</label>
-        <div class="color-row">
+        <label>Photo / Video Box (bottom right)</label>
+        <div class="field-row">
           <div class="field-group">
-            <label for="colorTopBg">Background (Top)</label>
-            <input id="colorTopBg" type="color" value="#ffffff" />
+            <label for="bgImageInput">Image (JPG/PNG)</label>
+            <input id="bgImageInput" type="file" accept="image/*" />
           </div>
           <div class="field-group">
-            <label for="colorBottomBg">Background (Bottom)</label>
-            <input id="colorBottomBg" type="color" value="#f5f5f5" />
-          </div>
-          <div class="field-group">
-            <label for="colorCardBg">Day Box Fill</label>
-            <input id="colorCardBg" type="color" value="#ffffff" />
-          </div>
-          <div class="field-group">
-            <label for="colorAccent">Outline/Accent</label>
-            <input id="colorAccent" type="color" value="#c8102e" />
-          </div>
-          <div class="field-group">
-            <label for="colorSideBg">Side Bar BG</label>
-            <input id="colorSideBg" type="color" value="#c8102e" />
-          </div>
-          <div class="field-group">
-            <label for="colorSideText">Side Bar Text</label>
-            <input id="colorSideText" type="color" value="#ffffff" />
+            <label for="videoInput">Video (MP4/MOV)</label>
+            <input id="videoInput" type="file" accept="video/*" />
           </div>
         </div>
-      </div>
-
-      <div class="field-group">
-        <label for="bgImageInput">Background Image (optional)</label>
-        <input id="bgImageInput" type="file" accept="image/*" />
-        <small>Use a field/stadium photo, logo, etc. Image stays in the browser only.</small>
+        <small>
+          Upload either an image or a short video.
+          If a video is selected, a still frame is captured and used in the corner box.
+          (The exported JPG/PDF will always be a static image.)
+        </small>
       </div>
 
       <hr style="border-color:#333;margin:0.6rem 0" />
@@ -542,6 +566,10 @@
             </div>
           </div>
         </div>
+
+        <!-- Picture / video snapshot box absolutely at bottom-right -->
+        <div class="image-box" id="imageBox"></div>
+
         <div class="accent-bar"></div>
       </div>
     </div>
@@ -692,14 +720,22 @@
 
       // Side bar text
       const side1 = document.getElementById("sideLine1").value || "Terrell High School";
-      const side2 = document.getElementById("sideLine2").value || "Tiger Athletics";
+      const side2Raw = document.getElementById("sideLine2").value || "Tiger Athletics";
       const side3Input = document.getElementById("sideLine3").value;
       const side3 = side3Input || rangeText || "";
 
       document.getElementById("sideLine1Preview").textContent = side1.toUpperCase();
-      // allow two lines in Line 2
-      document.getElementById("sideLine2Preview").innerHTML =
-        side2.toUpperCase().replace(/\n/g, "<br>");
+
+      // Split line 2 into up to two stacked lines
+      const words = side2Raw.toUpperCase().trim().split(/\s+/);
+      let side2HTML = "";
+      if (words.length <= 1) {
+        side2HTML = words[0] || "";
+      } else {
+        side2HTML = `<span>${words[0]}</span><span>${words.slice(1).join(" ")}</span>`;
+      }
+      document.getElementById("sideLine2Preview").innerHTML = side2HTML;
+
       document.getElementById("sideLine3Preview").textContent = side3.toUpperCase();
 
       // Dates in day cards
@@ -730,21 +766,58 @@
 
     document.getElementById("updateBtn").addEventListener("click", updatePreview);
 
-    // Background image
+    // Picture / video snapshot box
+    const imageBox = document.getElementById("imageBox");
     const bgInput = document.getElementById("bgImageInput");
-    const scheduleEl = document.getElementById("schedule");
+    const videoInput = document.getElementById("videoInput");
 
+    // Image upload
     bgInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) {
-        scheduleEl.style.backgroundImage = "";
+        imageBox.style.backgroundImage = "";
         return;
       }
       const reader = new FileReader();
       reader.onload = (ev) => {
-        scheduleEl.style.backgroundImage = `url('${ev.target.result}')`;
+        imageBox.style.backgroundImage = `url('${ev.target.result}')`;
       };
       reader.readAsDataURL(file);
+    });
+
+    // Video upload -> capture frame as image
+    videoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) {
+        return;
+      }
+
+      // Clear any existing image
+      imageBox.style.backgroundImage = "";
+
+      const url = URL.createObjectURL(file);
+      const video = document.createElement("video");
+      video.src = url;
+      video.muted = true;
+      video.playsInline = true;
+
+      // When data is loaded, grab a frame
+      video.addEventListener("loadeddata", function() {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = video.videoWidth || 800;
+          canvas.height = video.videoHeight || 450;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+          imageBox.style.backgroundImage = `url('${dataURL}')`;
+        } finally {
+          URL.revokeObjectURL(url);
+        }
+      });
+
+      // Start loading
+      video.load();
     });
 
     async function captureAndDownload(type) {
@@ -784,8 +857,12 @@
     document.getElementById("headerFontSelect").addEventListener("change", setCSSVars);
     document.getElementById("bodyFontSelect").addEventListener("change", setCSSVars);
 
+    // Initial render
     updatePreview();
   </script>
 </body>
 </html>
+
+</html>
+
 
