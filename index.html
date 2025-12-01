@@ -249,15 +249,15 @@
 
     .side-line.small {
       font-size: 0.75rem;
-      writing-mode: horizontal-tb;    /* normal horizontal */
+      writing-mode: horizontal-tb;    /* horizontal */
     }
 
     .side-line.main {
-  font-size: 1.3rem;
-  font-weight: 700;
-  writing-mode: horizontal-tb;    /* <-- make it horizontal */
-  white-space: pre-line;          /* <-- respect line breaks */
-}
+      font-size: 1.3rem;
+      font-weight: 700;
+      writing-mode: horizontal-tb;    /* now horizontal */
+      white-space: pre-line;          /* respect line breaks */
+    }
 
     /* MAIN GRID AREA */
     .main-panel {
@@ -642,7 +642,7 @@
       dayColumns.push({ dateEl, eventsEl, card });
     });
 
-    // Important Information card – auto height
+    // Important Information card
     const infoCard = document.createElement("div");
     infoCard.className = "day-card info-card";
 
@@ -695,8 +695,11 @@
       const side2 = document.getElementById("sideLine2").value || "Tiger Athletics";
       const side3Input = document.getElementById("sideLine3").value;
       const side3 = side3Input || rangeText || "";
+
       document.getElementById("sideLine1Preview").textContent = side1.toUpperCase();
-      document.getElementById("sideLine2Preview").textContent = side2.toUpperCase();
+      // allow two lines in Line 2
+      document.getElementById("sideLine2Preview").innerHTML =
+        side2.toUpperCase().replace(/\n/g, "<br>");
       document.getElementById("sideLine3Preview").textContent = side3.toUpperCase();
 
       // Dates in day cards
@@ -785,5 +788,3 @@
   </script>
 </body>
 </html>
-
-
